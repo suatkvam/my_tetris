@@ -88,23 +88,23 @@ void	render(t_tetris *t)
 	{
 		append_string(buffer, &pos, "  |");
 		if (t->paused && y == 8)
-			append_string(buffer, &pos, "      PAUSED      ");
+			append_string(buffer, &pos, "       PAUSED       ");
 		else if (t->paused && y == 10)
 		{
 			if (t->menu_selection == 0)
-				append_string(buffer, &pos, "     > Return     ");
+				append_string(buffer, &pos, "      > Return      ");
 			else
-				append_string(buffer, &pos, "       Return     ");
+				append_string(buffer, &pos, "        Return      ");
 		}
 		else if (t->paused && y == 11)
 		{
 			if (t->menu_selection == 1)
-				append_string(buffer, &pos, "     > Exit       ");
+				append_string(buffer, &pos, "      > Exit        ");
 			else
-				append_string(buffer, &pos, "       Exit       ");
+				append_string(buffer, &pos, "        Exit        ");
 		}
 		else if (t->paused && (y == 9 || y == 12))
-			append_string(buffer, &pos, "                  ");
+			append_string(buffer, &pos, "                    ");
 		else
 		{
 			x = 0;
