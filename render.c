@@ -117,7 +117,27 @@ void	render(t_tetris *t)
 				x++;
 			}
 		}
-		append_string(buffer, &pos, "|\n");
+		append_string(buffer, &pos, "|");
+		
+		// Right Side Info (Next Piece)
+		if (y == 0)
+			append_string(buffer, &pos, " Next:");
+		else if (y >= 2 && y < 6)
+		{
+			append_string(buffer, &pos, " ");
+			int py = y - 2;
+			int px = 0;
+			while (px < 4)
+			{
+				if (t->pieces[t->next_piece][0][py][px])
+					append_string(buffer, &pos, "[]");
+				else
+					append_string(buffer, &pos, "  ");
+				px++;
+			}
+		}
+		
+		append_string(buffer, &pos, "\033[K\n");
 		y++;
 	}
 
@@ -129,14 +149,14 @@ void	render(t_tetris *t)
 		append_string(buffer, &pos, "--");
 		i++;
 	}
-	append_string(buffer, &pos, "+\n");
+	append_string(buffer, &pos, "+\033[K\n");
 
 	// Score and Level
 	append_string(buffer, &pos, "Score: ");
 	append_int(buffer, &pos, t->score);
-	append_string(buffer, &pos, "\nLevel: ");
+	append_string(buffer, &pos, "\033[K\nLevel: ");
 	append_int(buffer, &pos, t->level);
-	append_string(buffer, &pos, "\n");
+	append_string(buffer, &pos, "\033[K\n");
 
 	write(STDOUT_FILENO, buffer, pos);
 }

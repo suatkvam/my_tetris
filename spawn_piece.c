@@ -14,10 +14,8 @@
 
 void	spawn_piece(t_tetris *t)
 {
-	unsigned int	r;
-
-	r = simple_rand(&t->random_number_seed);
-	t->current_piece = r % 7;
+	t->current_piece = t->next_piece;
+	t->next_piece = simple_rand(&t->random_number_seed) % 7;
 	t->rotation = 0;
 	t->pos_x = t->board_w / 2 - 2;
 	t->pos_y = 0;
