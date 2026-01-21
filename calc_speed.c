@@ -12,12 +12,14 @@
 
 #include "tetris.h"
 
-int	calc_speed(int level)
+int	calc_speed(int level, t_settings *settings)
 {
 	int	base;
+	int	speed_level;
 
-	base = 10 - level;
-	if (base < 2)
-		base = 2;
+	speed_level = (level - 1) / settings->speed_level_step;
+	base = settings->speed_base - speed_level;
+	if (base < settings->speed_min)
+		base = settings->speed_min;
 	return (base);
 }

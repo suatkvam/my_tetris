@@ -6,10 +6,17 @@ SRCS = calc_speed.c \
 	cleare_piece.c \
 	collision.c \
 	init_tetris.c \
+	local_2p.c \
 	lock_piece.c \
 	main.c \
+	menu.c \
 	movement.c \
+	multiplayer_menu.c \
+	multiplayer_render.c \
+	network.c \
 	render.c \
+	scoreboard.c \
+	settings.c \
 	spawn_piece.c \
 	tetris.c \
 	tetromino.c
