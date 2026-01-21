@@ -41,6 +41,7 @@ typedef struct s_tetris
 	int             next_piece;
 	int             paused;
 	int             menu_selection;
+	int             game_over;
 }   t_tetris;
 
 typedef struct s_shell

@@ -65,6 +65,12 @@ void	handle_input(t_shell *shell)
 			t->running = 0;
 			return ;
 		}
+		if (t->game_over)
+		{
+			if (c == KEY_ESC || c == '\n' || c == ' ')
+				t->running = 0;
+			return ;
+		}
 		if (c == KEY_ESC)
 			handle_escape(t);
 		else if (t->paused)
@@ -100,7 +106,7 @@ void	update_game(t_shell *shell)
 	t_tetris	*t;
 
 	t = shell->tetris;
-	if (t->paused)
+	if (t->paused || t->game_over)
 		return ;
 	t->tick++;
 	t->speed = calc_speed(t->level);
@@ -136,4 +142,6 @@ void	start_game(char **args, t_shell *shell)
 	init_tetris(shell->tetris, shell->cmd_arena);
 	game_loop(shell);
 	tcsetattr(STDIN_FILENO, TCSANOW, &old);
+	// Show cursor
+	write(1, "\033[?25h", 6);
 }

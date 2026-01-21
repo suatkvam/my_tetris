@@ -50,6 +50,7 @@ void	init_tetris(t_tetris *t, void *arena)
 	t->running = 1;
 	t->paused = 0;
 	t->menu_selection = 0;
+	t->game_over = 0;
 	t->next_piece = simple_rand(&t->random_number_seed) % 7;
 	spawn_piece(t);
 }

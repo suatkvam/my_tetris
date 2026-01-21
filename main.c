@@ -40,7 +40,5 @@ int	main(void)
 
 	start_game(NULL, &shell);
 
-	// Restore cursor
-	write(1, "\033[?25h", 6);
 	return (0);
 }

@@ -20,5 +20,5 @@ void	spawn_piece(t_tetris *t)
 	t->pos_x = t->board_w / 2 - 2;
 	t->pos_y = 0;
 	if (check_collision(t, t->pos_x, t->pos_y, t->rotation))
-		t->running = 0;
+		t->game_over = 1;
 }
