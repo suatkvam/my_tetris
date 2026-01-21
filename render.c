@@ -61,6 +61,31 @@ static int	check_active_piece(t_tetris *t, int x, int y)
 	return (0);
 }
 
+static int	get_ghost_y(t_tetris *t)
+{
+	int	ghost_y;
+
+	ghost_y = t->pos_y;
+	while (!check_collision(t, t->pos_x, ghost_y + 1, t->rotation))
+		ghost_y++;
+	return (ghost_y);
+}
+
+static int	check_ghost_piece(t_tetris *t, int x, int y, int ghost_y)
+{
+	int	px;
+	int	py;
+
+	py = y - ghost_y;
+	px = x - t->pos_x;
+	if (px >= 0 && px < 4 && py >= 0 && py < 4)
+	{
+		if (t->pieces[t->current_piece][t->rotation][py][px])
+			return (1);
+	}
+	return (0);
+}
+
 void	render(t_tetris *t)
 {
 	char	buffer[BUFFER_SIZE];
@@ -68,8 +93,10 @@ void	render(t_tetris *t)
 	int		x;
 	int		y;
 	int		i;
+	int		ghost_y;
 
 	pos = 0;
+	ghost_y = get_ghost_y(t);
 	append_string(buffer, &pos, HOME);
 
 	// Top Border
@@ -110,8 +137,12 @@ void	render(t_tetris *t)
 			x = 0;
 			while (x < t->board_w)
 			{
-				if (t->board[y][x] || check_active_piece(t, x, y))
+				if (t->board[y][x])
 					append_string(buffer, &pos, "[]");
+				else if (check_active_piece(t, x, y))
+					append_string(buffer, &pos, "[]");
+				else if (check_ghost_piece(t, x, y, ghost_y))
+					append_string(buffer, &pos, "::");
 				else
 					append_string(buffer, &pos, "  ");
 				x++;
