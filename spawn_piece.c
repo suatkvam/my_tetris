@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "extra_commands_bonus.h"
+#include "tetris.h"
 
 void	spawn_piece(t_tetris *t)
 {

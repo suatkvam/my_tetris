@@ -10,31 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "extra_commands_bonus.h"
+#include "tetris.h"
 
 static void	handle_escape(t_tetris *t)
 {
 	char	seq[2];
 
 	if (read(STDIN_FILENO, &seq[0], 1) != 1)
-	{
-		t->running = 0;
 		return ;
-	}
 	if (seq[0] != '[')
-	{
-		t->running = 0;
 		return ;
-	}
 	if (read(STDIN_FILENO, &seq[1], 1) != 1)
 		return ;
-	if (seq[1] == KEY_ROTATE)
+	if (seq[1] == 'A')
 		rotate_piece(t);
-	else if (seq[1] == KEY_SOFT_DROP)
+	else if (seq[1] == 'B')
 		soft_drop(t);
-	else if (seq[1] == KEY_RIGHT)
+	else if (seq[1] == 'C')
 		move_right(t);
-	else if (seq[1] == KEY_LEFT)
+	else if (seq[1] == 'D')
 		move_left(t);
 }
 
@@ -44,22 +38,26 @@ void	handle_input(t_shell *shell)
 	char		c;
 
 	t = shell->tetris;
-	if (read(STDIN_FILENO, &c, 1) != 1)
-		return ;
-	if (c == KEY_CTRL_C || c == KEY_CTRL_D)
+	while (read(STDIN_FILENO, &c, 1) == 1)
 	{
-		t->running = 0;
-		return ;
+		if (c == KEY_CTRL_C || c == KEY_CTRL_D || c == KEY_QUIT)
+		{
+			t->running = 0;
+			return ;
+		}
+		if (c == KEY_ESC)
+			handle_escape(t);
+		else if (c == KEY_ROTATE)
+			rotate_piece(t);
+		else if (c == KEY_SOFT_DROP)
+			soft_drop(t);
+		else if (c == KEY_LEFT)
+			move_left(t);
+		else if (c == KEY_RIGHT)
+			move_right(t);
+		else if (c == KEY_HARD_DROP)
+			hard_drop(t);
 	}
-	if (c == KEY_QUIT)
-	{
-		t->running = 0;
-		return ;
-	}
-	if (c == KEY_ESC)
-		handle_escape(t);
-	if (c == KEY_HARD_DROP)
-		hard_drop(t);
 }
 
 void	update_game(t_shell *shell)
@@ -96,6 +94,7 @@ void	start_game(char **args, t_shell *shell)
 
 	(void)args;
 	setup_tetris_terminal(&old);
+	write(1, CLEAR, 4);
 	shell->tetris = gc_malloc(shell->cmd_arena, sizeof(t_tetris));
 	init_tetris(shell->tetris, shell->cmd_arena);
 	game_loop(shell);

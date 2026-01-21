@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "extra_commands_bonus.h"
+#include "tetris.h"
 
 static void	shift_rows_down(t_tetris *t, int y)
 {

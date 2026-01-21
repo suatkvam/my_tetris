@@ -10,7 +10,41 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "extra_commands_bonus.h"
+#include "tetris.h"
+
+#define BUFFER_SIZE 4096
+
+static void	append_string(char *buffer, int *pos, const char *str)
+{
+	while (*str && *pos < BUFFER_SIZE - 1)
+		buffer[(*pos)++] = *str++;
+	buffer[*pos] = '\0';
+}
+
+static void	append_int(char *buffer, int *pos, int n)
+{
+	char	temp[16];
+	int		i;
+
+	if (n == 0)
+	{
+		append_string(buffer, pos, "0");
+		return ;
+	}
+	i = 0;
+	while (n > 0)
+	{
+		temp[i++] = (n % 10) + '0';
+		n /= 10;
+	}
+	while (i > 0)
+	{
+		if (*pos < BUFFER_SIZE - 1)
+			buffer[(*pos)++] = temp[--i];
+		else
+			break;
+	}
+}
 
 static int	check_active_piece(t_tetris *t, int x, int y)
 {
@@ -27,38 +61,61 @@ static int	check_active_piece(t_tetris *t, int x, int y)
 	return (0);
 }
 
-static void	draw_cell(t_tetris *t, int x, int y)
-{
-	int	draw;
-
-	draw = t->board[y][x];
-	if (!draw)
-		draw = check_active_piece(t, x, y);
-	if (draw)
-		write(1, "[]", 2);
-	else
-		write(1, "  ", 2);
-}
-
 void	render(t_tetris *t)
 {
-	int	x;
-	int	y;
+	char	buffer[BUFFER_SIZE];
+	int		pos;
+	int		x;
+	int		y;
+	int		i;
 
-	write(1, HOME, 3);
-	write(1, CLEAR, 4);
+	pos = 0;
+	append_string(buffer, &pos, HOME);
+
+	// Top Border
+	append_string(buffer, &pos, "  +");
+	i = 0;
+	while (i < t->board_w)
+	{
+		append_string(buffer, &pos, "--");
+		i++;
+	}
+	append_string(buffer, &pos, "+\n");
+
+	// Board Rows
 	y = 0;
 	while (y < t->board_h)
 	{
+		append_string(buffer, &pos, "  |");
 		x = 0;
 		while (x < t->board_w)
 		{
-			draw_cell(t, x, y);
+			if (t->board[y][x] || check_active_piece(t, x, y))
+				append_string(buffer, &pos, "[]");
+			else
+				append_string(buffer, &pos, "  ");
 			x++;
 		}
-		write(1, "\n", 1);
+		append_string(buffer, &pos, "|\n");
 		y++;
 	}
-	ft_printf("\nScore: %d\n", t->score);
-	ft_printf("Level: %d\n", t->level);
+
+	// Bottom Border
+	append_string(buffer, &pos, "  +");
+	i = 0;
+	while (i < t->board_w)
+	{
+		append_string(buffer, &pos, "--");
+		i++;
+	}
+	append_string(buffer, &pos, "+\n");
+
+	// Score and Level
+	append_string(buffer, &pos, "Score: ");
+	append_int(buffer, &pos, t->score);
+	append_string(buffer, &pos, "\nLevel: ");
+	append_int(buffer, &pos, t->level);
+	append_string(buffer, &pos, "\n");
+
+	write(STDOUT_FILENO, buffer, pos);
 }

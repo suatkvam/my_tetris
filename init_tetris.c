@@ -10,19 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "extra_commands_bonus.h"
+#include "tetris.h"
 
-static int	**allocate_board(int h, int w, void *arena)
+static int	**allocate_board(int h, int w)
 {
 	int	**board;
 	int	i;
 	int	j;
 
-	board = (int **)gc_malloc(arena, sizeof(int *) * h);
+	board = (int **)gc_malloc(NULL, sizeof(int *) * h);
 	i = 0;
 	while (i < h)
 	{
-		board[i] = (int *)gc_malloc(arena, sizeof(int) * w);
+		board[i] = (int *)gc_malloc(NULL, sizeof(int) * w);
 		j = 0;
 		while (j < w)
 		{
@@ -36,9 +36,10 @@ static int	**allocate_board(int h, int w, void *arena)
 
 void	init_tetris(t_tetris *t, void *arena)
 {
+	(void)arena;
 	t->board_w = 10;
 	t->board_h = 20;
-	t->board = allocate_board(t->board_h, t->board_w, arena);
+	t->board = allocate_board(t->board_h, t->board_w);
 	t->pieces = get_tetromino_shapes();
 	t->score = 0;
 	t->level = 1;
