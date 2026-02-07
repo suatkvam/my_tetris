@@ -18,12 +18,14 @@ static int	**allocate_board(int h, int w)
 	int	i;
 	int	j;
 
+	/* TODO: Restore gc_malloc(arena, ...) for Minishell integration */
 	board = (int **)malloc(sizeof(int *) * h);
 	if (!board)
 		return (NULL);
 	i = 0;
 	while (i < h)
 	{
+		/* TODO: Restore gc_malloc(arena, ...) for Minishell integration */
 		board[i] = (int *)malloc(sizeof(int) * w);
 		if (!board[i])
 			return (NULL);

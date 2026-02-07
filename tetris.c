@@ -49,6 +49,7 @@ void	start_game(char **args, t_shell *shell)
 	(void)args;
 	setup_tetris_terminal(&old);
 	write(1, CLEAR, 4);
+	/* TODO: Restore gc_malloc(shell->cmd_arena, ...) for Minishell integration */
 	shell->tetris = malloc(sizeof(t_tetris));
 	if (!shell->tetris)
 		return ;
@@ -56,5 +57,6 @@ void	start_game(char **args, t_shell *shell)
 	game_loop(shell);
 	tcsetattr(STDIN_FILENO, TCSANOW, &old);
 	write(1, "\033[?25h", 6);
+	/* TODO: Remove free() if using gc_malloc */
 	free(shell->tetris);
 }
