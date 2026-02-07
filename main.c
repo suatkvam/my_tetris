@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: harici <harici@student.42istanbul.com.tr>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/07 14:06:56 by harici            #+#    #+#             */
+/*   Updated: 2026/02/07 14:07:00 by harici           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "tetris.h"
 
 void	setup_tetris_terminal(struct termios *old)
@@ -10,7 +22,6 @@ void	setup_tetris_terminal(struct termios *old)
 	new.c_cc[VMIN] = 0;
 	new.c_cc[VTIME] = 0;
 	tcsetattr(STDIN_FILENO, TCSANOW, &new);
-	// Hide cursor
 	write(1, "\033[?25l", 6);
 }
 
@@ -30,7 +41,7 @@ unsigned int	get_random_seed(void)
 
 	fd = open("/dev/urandom", O_RDONLY);
 	if (fd < 0)
-		return (42); // Fallback if urandom fails
+		return (42);
 	read(fd, &seed, sizeof(seed));
 	close(fd);
 	return (seed);
@@ -48,17 +59,11 @@ unsigned int	xorshift32(unsigned int *state)
 	return (x);
 }
 
-// Declaration from tetris.c
-void	start_game(char **args, t_shell *shell);
-
 int	main(void)
 {
 	t_shell	shell;
 
-	// Need to zero out shell or at least cmd_arena since we pass it to gc_malloc macro
 	shell.cmd_arena = NULL;
-
 	start_game(NULL, &shell);
-
 	return (0);
 }

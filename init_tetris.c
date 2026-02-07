@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_tetris.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akivam <akivam@student.42istanbul.com.tr>  +#+  +:+       +#+        */
+/*   By: harici <harici@student.42istanbul.com.tr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/18 19:36:28 by akivam            #+#    #+#             */
-/*   Updated: 2026/01/18 19:36:28 by akivam           ###   ########.fr       */
+/*   Created: 2026/02/07 14:07:12 by harici            #+#    #+#             */
+/*   Updated: 2026/02/07 14:07:13 by harici           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,15 @@ static int	**allocate_board(int h, int w)
 	int	i;
 	int	j;
 
-	board = (int **)gc_malloc(NULL, sizeof(int *) * h);
+	board = (int **)malloc(sizeof(int *) * h);
+	if (!board)
+		return (NULL);
 	i = 0;
 	while (i < h)
 	{
-		board[i] = (int *)gc_malloc(NULL, sizeof(int) * w);
+		board[i] = (int *)malloc(sizeof(int) * w);
+		if (!board[i])
+			return (NULL);
 		j = 0;
 		while (j < w)
 		{
