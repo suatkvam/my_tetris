@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: harici <harici@student.42istanbul.com.tr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/07 14:06:24 by harici            #+#    #+#             */
-/*   Updated: 2026/02/07 14:06:28 by harici           ###   ########.fr       */
+/*   Created: 2025/02/07 18:10:00 by harici            #+#    #+#             */
+/*   Updated: 2026/02/07 14:13:22 by harici           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 static void	fill_art_buffer(char *buffer, int *pos)
 {
-	append_string(buffer, pos, " ██████   █████  ███    ███ ███████");
+	append_string(buffer, pos, "   ██████   █████  ███    ███ ███████");
 	append_string(buffer, pos, "      ██████  ██    ██ ███████");
 	append_string(buffer, pos, " ██████   \033[K\n");
-	append_string(buffer, pos, " ██       ██   ██ ████  ████ ██      ");
+	append_string(buffer, pos, "  ██       ██   ██ ████  ████ ██      ");
 	append_string(buffer, pos, "    ██    ██ ██    ██ ██      ");
 	append_string(buffer, pos, "██   ██ \033[K\n");
-	append_string(buffer, pos, " ██   ███ ███████ ██ ████ ██ █████  ");
+	append_string(buffer, pos, "  ██   ███ ███████ ██ ████ ██ █████  ");
 	append_string(buffer, pos, "     ██    ██ ██    ██ █████   ");
 	append_string(buffer, pos, "██████  \033[K\n");
-	append_string(buffer, pos, " ██    ██ ██   ██ ██  ██  ██ ██     ");
+	append_string(buffer, pos, "  ██    ██ ██   ██ ██  ██  ██ ██     ");
 	append_string(buffer, pos, "     ██    ██  ██  ██  ██      ");
 	append_string(buffer, pos, "██   ██ \033[K\n");
-	append_string(buffer, pos, "  ██████  ██   ██ ██      ██ ███████");
+	append_string(buffer, pos, "   ██████  ██   ██ ██      ██ ███████");
 	append_string(buffer, pos, "      ██████    ████   ███████ ");
 	append_string(buffer, pos, "██   ██ \033[K\n");
 }
