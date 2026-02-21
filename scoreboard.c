@@ -67,12 +67,11 @@ void	add_score(int score, int level, const char *name)
 static void	render_score_line(int rank, t_score_entry *entry)
 {
 	char	buffer[100];
-	int		len;
 
-	len = snprintf(buffer, sizeof(buffer),
-			"  ║ %2d. %-16s %6d pts  Lvl %-2d ║\n",
+	snprintf(buffer, sizeof(buffer),
+			"  ║ %2d. %-16s %6d pts  Lvl %-2d ║\033[K\n",
 			rank, entry->name, entry->score, entry->level);
-	write(1, buffer, len);
+	write(1, buffer, strlen(buffer));
 }
 
 void	render_high_scores(t_tetris *t)
@@ -82,19 +81,18 @@ void	render_high_scores(t_tetris *t)
 	int				i;
 
 	(void)t;
-	write(1, CLEAR, 4);
 	write(1, HOME, 3);
 	write(1, "\n\n", 2);
-	write(1, "  ╔════════════════════════════════════════╗\n", 47);
-	write(1, "  ║        HIGH SCORES (TOP 10)           ║\n", 47);
-	write(1, "  ╠════════════════════════════════════════╣\n", 47);
+	write(1, "  ╔════════════════════════════════════════╗\033[K\n", 51);
+	write(1, "  ║        HIGH SCORES (TOP 10)           ║\033[K\n", 51);
+	write(1, "  ╠════════════════════════════════════════╣\033[K\n", 51);
 
 	count = load_scores(scores);
 	if (count == 0)
 	{
-		write(1, "  ║                                        ║\n", 47);
-		write(1, "  ║       No scores yet. Play a game!      ║\n", 47);
-		write(1, "  ║                                        ║\n", 47);
+		write(1, "  ║                                        ║\033[K\n", 51);
+		write(1, "  ║       No scores yet. Play a game!      ║\033[K\n", 51);
+		write(1, "  ║                                        ║\033[K\n", 51);
 	}
 	else
 	{
@@ -106,9 +104,9 @@ void	render_high_scores(t_tetris *t)
 		}
 	}
 
-	write(1, "  ╚════════════════════════════════════════╝\n", 47);
-	write(1, "\n", 1);
-	write(1, "  Press ESC to return to menu\n", 31);
+	write(1, "  ╚════════════════════════════════════════╝\033[K\n", 51);
+	write(1, "\033[K\n", 4);
+	write(1, "  Press ESC to return to menu\033[K\n", 34);
 }
 
 int	read_name_input(char *name, int max_len)

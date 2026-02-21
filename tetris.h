@@ -39,7 +39,7 @@
 # define SPEED_BASE_DEFAULT 12
 # define SPEED_MIN_DEFAULT 3
 # define SPEED_LEVEL_STEP_DEFAULT 5
-# define LOCK_DELAY_DEFAULT 8
+# define LOCK_DELAY_DEFAULT 1
 # define GHOST_PIECE_DEFAULT 1
 
 typedef enum e_game_mode
