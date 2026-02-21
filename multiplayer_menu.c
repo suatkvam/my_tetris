@@ -145,48 +145,43 @@ void	render_host_waiting(t_tetris *t)
 {
 	char	buffer[128];
 	char	ip[16];
-	int		len;
-
-	write(1, CLEAR, 4);
-	write(1, HOME, 3);
-	write(1, "\n\n", 2);
-	write(1, "  ╔════════════════════════════════════╗\n", 44);
-	write(1, "  ║                                    ║\n", 44);
-	write(1, "  ║          HOSTING GAME...           ║\n", 44);
-	write(1, "  ║                                    ║\n", 44);
-	write(1, "  ╚════════════════════════════════════╝\n", 44);
-	write(1, "\n", 1);
 
 	get_local_ip(ip, sizeof(ip));
-	len = snprintf(buffer, sizeof(buffer),
-		"  Your IP: %s\n", ip);
-	write(1, buffer, len);
-	len = snprintf(buffer, sizeof(buffer),
-		"  Port: %d\n\n", t->network->port);
-	write(1, buffer, len);
-	write(1, "  Waiting for opponent to connect...\n\n", 39);
-	write(1, "  Press ESC to cancel\n", 23);
+	
+	write(1, HOME, 3);
+	write(1, "\n\n", 2);
+	write(1, "  ╔════════════════════════════════════╗\033[K\n", 48);
+	write(1, "  ║                                    ║\033[K\n", 48);
+	write(1, "  ║          HOSTING GAME...           ║\033[K\n", 48);
+	write(1, "  ║                                    ║\033[K\n", 48);
+	write(1, "  ╚════════════════════════════════════╝\033[K\n", 48);
+	write(1, "\033[K\n", 4);
+
+	snprintf(buffer, sizeof(buffer), "  Your IP: %s\033[K\n", ip);
+	write(1, buffer, strlen(buffer));
+	snprintf(buffer, sizeof(buffer), "  Port: %d\033[K\n\n", t->network->port);
+	write(1, buffer, strlen(buffer));
+	write(1, "  Waiting for opponent to connect...\033[K\n\n", 42);
+	write(1, "  Press ESC to cancel\033[K\n", 26);
 }
 
 void	render_join_connecting(t_tetris *t)
 {
 	char	buffer[128];
-	int		len;
 
-	write(1, CLEAR, 4);
 	write(1, HOME, 3);
 	write(1, "\n\n", 2);
-	write(1, "  ╔════════════════════════════════════╗\n", 44);
-	write(1, "  ║                                    ║\n", 44);
-	write(1, "  ║         JOINING GAME...            ║\n", 44);
-	write(1, "  ║                                    ║\n", 44);
-	write(1, "  ╚════════════════════════════════════╝\n", 44);
-	write(1, "\n", 1);
+	write(1, "  ╔════════════════════════════════════╗\033[K\n", 48);
+	write(1, "  ║                                    ║\033[K\n", 48);
+	write(1, "  ║         JOINING GAME...            ║\033[K\n", 48);
+	write(1, "  ║                                    ║\033[K\n", 48);
+	write(1, "  ╚════════════════════════════════════╝\033[K\n", 48);
+	write(1, "\033[K\n", 4);
 
-	len = snprintf(buffer, sizeof(buffer),
-		"  Connecting to: %s:%d\n\n", t->network->opponent_ip, t->network->port);
-	write(1, buffer, len);
-	write(1, "  Please wait...\n", 17);
+	snprintf(buffer, sizeof(buffer),
+		"  Connecting to: %s:%d\033[K\n\n", t->network->opponent_ip, t->network->port);
+	write(1, buffer, strlen(buffer));
+	write(1, "  Please wait...\033[K\n", 20);
 }
 
 void	render_connection_failed(void)

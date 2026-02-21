@@ -1,44 +1,47 @@
 #include "tetris.h"
 
-static void	draw_cell(int value)
+#define RENDER_BUFFER_SIZE 8192
+
+static void	append_str(char *buf, int *pos, const char *str)
 {
-	if (value == 0)
-		write(1, "  ", 2);
-	else
-		write(1, "██", 6);
+	while (*str && *pos < RENDER_BUFFER_SIZE - 1)
+		buf[(*pos)++] = *str++;
 }
 
-static void	render_player_board(t_tetris *t, int offset_x)
+
+
+static void	render_board_to_buffer(char *buf, int *pos, t_tetris *t, int offset_x)
 {
-	char	buffer[100];
+	char	line[200];
 	int		i;
 	int		j;
-	int		len;
 
 	i = 0;
 	while (i < t->board_h)
 	{
-		len = snprintf(buffer, sizeof(buffer), "\033[%d;%dH", i + 3, offset_x);
-		write(1, buffer, len);
-		write(1, "║", 3);
+		snprintf(line, sizeof(line), "\033[%d;%dH║", i + 3, offset_x);
+		append_str(buf, pos, line);
 		j = 0;
 		while (j < t->board_w)
 		{
-			draw_cell(t->board[i][j]);
+			if (t->board[i][j] == 0)
+				append_str(buf, pos, "  ");
+			else
+				append_str(buf, pos, "██");
 			j++;
 		}
-		write(1, "║", 3);
+		append_str(buf, pos, "║\033[K\n");
 		i++;
 	}
 }
 
-static void	render_player_piece(t_tetris *t, int offset_x, int is_ghost)
+static void	render_piece_to_buffer(char *buf, int *pos, t_tetris *t,
+	int offset_x, int is_ghost)
 {
-	char	buffer[100];
+	char	line[100];
 	int		i;
 	int		j;
 	int		y_pos;
-	int		len;
 
 	y_pos = t->pos_y;
 	if (is_ghost)
@@ -54,13 +57,13 @@ static void	render_player_piece(t_tetris *t, int offset_x, int is_ghost)
 		{
 			if (t->pieces[t->current_piece][t->rotation][i][j])
 			{
-				len = snprintf(buffer, sizeof(buffer), "\033[%d;%dH",
-					y_pos + i + 3, offset_x + 3 + (t->pos_x + j) * 2);
-				write(1, buffer, len);
+				snprintf(line, sizeof(line), "\033[%d;%dH",
+					y_pos + i + 3, offset_x + 1 + (t->pos_x + j) * 2);
+				append_str(buf, pos, line);
 				if (is_ghost)
-					write(1, "░░", 6);
+					append_str(buf, pos, "░░");
 				else
-					write(1, "██", 6);
+					append_str(buf, pos, "██");
 			}
 			j++;
 		}
@@ -68,81 +71,75 @@ static void	render_player_piece(t_tetris *t, int offset_x, int is_ghost)
 	}
 }
 
-static void	render_player_info(t_tetris *t, int offset_x, int offset_y,
-	const char *label)
+static void	render_info_to_buffer(char *buf, int *pos, t_tetris *t,
+	int offset_x, int offset_y, const char *label)
 {
-	char	buffer[100];
-	int		len;
+	char	line[100];
 
-	len = snprintf(buffer, sizeof(buffer), "\033[%d;%dH%s",
-		offset_y, offset_x, label);
-	write(1, buffer, len);
-	len = snprintf(buffer, sizeof(buffer), "\033[%d;%dHScore: %d",
-		offset_y + 2, offset_x, t->score);
-	write(1, buffer, len);
-	len = snprintf(buffer, sizeof(buffer), "\033[%d;%dHLevel: %d",
-		offset_y + 3, offset_x, t->level);
-	write(1, buffer, len);
-	len = snprintf(buffer, sizeof(buffer), "\033[%d;%dHLines: %d",
-		offset_y + 4, offset_x, t->lines);
-	write(1, buffer, len);
+	snprintf(line, sizeof(line), "\033[%d;%dH%s\033[K", offset_y, offset_x, label);
+	append_str(buf, pos, line);
+	snprintf(line, sizeof(line), "\033[%d;%dHScore: %d\033[K", offset_y + 2, offset_x, t->score);
+	append_str(buf, pos, line);
+	snprintf(line, sizeof(line), "\033[%d;%dHLevel: %d\033[K", offset_y + 3, offset_x, t->level);
+	append_str(buf, pos, line);
+	snprintf(line, sizeof(line), "\033[%d;%dHLines: %d\033[K", offset_y + 4, offset_x, t->lines);
+	append_str(buf, pos, line);
 }
 
-static void	render_opponent_info(t_opponent_state *opp, int offset_x, int offset_y)
+static void	render_opponent_to_buffer(char *buf, int *pos,
+	t_opponent_state *opp, int offset_x, int offset_y)
 {
-	char	buffer[100];
-	int		len;
+	char	line[100];
 
-	len = snprintf(buffer, sizeof(buffer), "\033[%d;%dH--- OPPONENT ---",
-		offset_y, offset_x);
-	write(1, buffer, len);
-	len = snprintf(buffer, sizeof(buffer), "\033[%d;%dHScore: %d",
-		offset_y + 2, offset_x, opp->score);
-	write(1, buffer, len);
-	len = snprintf(buffer, sizeof(buffer), "\033[%d;%dHLevel: %d",
-		offset_y + 3, offset_x, opp->level);
-	write(1, buffer, len);
-	len = snprintf(buffer, sizeof(buffer), "\033[%d;%dHLines: %d",
-		offset_y + 4, offset_x, opp->lines);
-	write(1, buffer, len);
+	snprintf(line, sizeof(line), "\033[%d;%dH--- OPPONENT ---\033[K", offset_y, offset_x);
+	append_str(buf, pos, line);
+	snprintf(line, sizeof(line), "\033[%d;%dHScore: %d\033[K", offset_y + 2, offset_x, opp->score);
+	append_str(buf, pos, line);
+	snprintf(line, sizeof(line), "\033[%d;%dHLevel: %d\033[K", offset_y + 3, offset_x, opp->level);
+	append_str(buf, pos, line);
+	snprintf(line, sizeof(line), "\033[%d;%dHLines: %d\033[K", offset_y + 4, offset_x, opp->lines);
+	append_str(buf, pos, line);
 	if (opp->game_over)
 	{
-		len = snprintf(buffer, sizeof(buffer), "\033[%d;%dH[GAME OVER]",
-			offset_y + 6, offset_x);
-		write(1, buffer, len);
+		snprintf(line, sizeof(line), "\033[%d;%dH[GAME OVER]\033[K", offset_y + 6, offset_x);
+		append_str(buf, pos, line);
+	}
+	else
+	{
+		snprintf(line, sizeof(line), "\033[%d;%dH\033[K", offset_y + 6, offset_x);
+		append_str(buf, pos, line);
 	}
 }
 
 void	render_multiplayer(t_tetris *t)
 {
-	int	board_offset;
-	int	info_offset;
+	static char	buffer[RENDER_BUFFER_SIZE];
+	int			pos;
+	int			board_offset;
+	int			info_offset;
 
+	pos = 0;
 	board_offset = 5;
 	info_offset = 30;
 
-	write(1, CLEAR, 4);
-	write(1, HOME, 3);
-	write(1, "\n", 1);
-	write(1, "            MULTIPLAYER MODE\n\n", 31);
+	append_str(buffer, &pos, HOME);
+	append_str(buffer, &pos, "\n            MULTIPLAYER MODE\033[K\n\033[K\n");
 
-	render_player_board(t, board_offset);
+	render_board_to_buffer(buffer, &pos, t, board_offset);
 	if (!t->game_over)
 	{
-		render_player_piece(t, board_offset, 1);
-		render_player_piece(t, board_offset, 0);
+		render_piece_to_buffer(buffer, &pos, t, board_offset, 1);
+		render_piece_to_buffer(buffer, &pos, t, board_offset, 0);
 	}
-	render_player_info(t, info_offset, 5, "--- YOU ---");
-	render_opponent_info(&t->opponent, info_offset, 12);
+	render_info_to_buffer(buffer, &pos, t, info_offset, 5, "--- YOU ---");
+	render_opponent_to_buffer(buffer, &pos, &t->opponent, info_offset, 12);
 
 	if (t->game_over)
-	{
-		write(1, "\033[25;10H", 9);
-		write(1, "YOU LOST! Press ENTER to continue...", 37);
-	}
+		append_str(buffer, &pos, "\033[25;10HYOU LOST! Press ENTER to continue...\033[K");
 	else if (t->opponent.game_over)
-	{
-		write(1, "\033[25;10H", 9);
-		write(1, "YOU WON! Press ENTER to continue...", 36);
-	}
+		append_str(buffer, &pos, "\033[25;10HYOU WON! Press ENTER to continue...\033[K");
+	else
+		append_str(buffer, &pos, "\033[25;10H\033[K");
+
+	write(1, buffer, pos);
 }

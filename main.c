@@ -10,8 +10,9 @@ void	setup_tetris_terminal(struct termios *old)
 	new.c_cc[VMIN] = 0;
 	new.c_cc[VTIME] = 0;
 	tcsetattr(STDIN_FILENO, TCSANOW, &new);
-	// Hide cursor
+	// Hide cursor and enable alternate screen buffer
 	write(1, "\033[?25l", 6);
+	write(1, "\033[?1049h", 8);
 }
 
 void	simple_delay(void)
